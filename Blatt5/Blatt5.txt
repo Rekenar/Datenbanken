@@ -1,0 +1,12 @@
+Aufgabe 1 (Funktionale Abhängigkeiten)
+
+a. 	Nennen Sie für folgende Relation Bestellung möglichst viele nicht triviale funktionale
+	Abhängigkeiten. Verwenden Sie zur Minimierung der Schreibarbeit Abkürzungen für die
+	Attribute. Geben Sie auch Abhängigkeiten mit mehreren Elementen auf der linken Seite an!
+	
+	
+b. Schlagen Sie mögliche Schlüsselkandidaten für die Relation vor.
+
+c. Welche Anomalien können bei dieser Relation auftreten? Nennen Sie jeweils ein Beispiel.
+
+d. Wie könnte man die Qualität dieses Relationenschemas verbessern?
