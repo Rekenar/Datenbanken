@@ -1,0 +1,75 @@
+1. UML Klassendiagramm (15 Punkte)
+Auf einem Flughafen landen und starten täglich Flüge laut Flugplan. Dabei ist von jedem
+geplanten Flug die eindeutige Flugnummer, der Flugzeugtyp, sowie die planmäßige Ankunftszeit
+und der Startflughafen bzw. die planmäßige Abflugzeit und der Zielflughafen und die
+Wochentage, an denen geflogen wird zu erfassen. Zu jedem solchen Flug laut Flugplan gibt es die
+tatsächlich ausgeführten einzelnen Flüge (Fluginstanzen). Von diesen ist jeweils der Flug laut
+Flugplan, das Datum, die tatsächlichen Lande bzw. Startzeit und das beteiligte Bordpersonal der
+Fluggesellschaften festzuhalten (SVNr, den Vor- und Nachnamen und die Funktion (PilotIn, CoPilotIn, FlugbegleiterIn).
+Jeder Mitarbeiter des Bordpersonals kann natürlich unterschiedlich
+vielen Fluginstanzen zugeordnet werden – allerdings kann sich von Flug zu Flug die Funktion
+ändern (Fr. Huber ist z.B. einmal Pilotin, und beim nächsten Flug Co-Pilotin).
+
+
+Neben diesem Personal der Fluggesellschaften hat der Flughafen selbst auch noch Mitarbeiter.
+Von diesen sind die SVNr, Vor- und Nachname und Gehalt bekannt. Zum 1. des jeweiligen
+Monats sollen die Gehälter ausbezahlt werden. Jeder Mitarbeiter ist für eine Menge von Flügen
+(laut Flugplan) verantwortlich – für einen solchen Flug ist aber jeweils nur ein eindeutiger
+Mitarbeiter verantwortlich. Jeder Mitarbeiter, der kein Chef ist, hat einen ihm vorgesetzten Chef.
+Da sich diese Zuordnung Mitarbeiter <> Chef jedoch ständig ändert, soll zusätzlich festgehalten
+werden, von wann bis wann ein Chef Vorgesetzter eines Mitarbeiters ist.
+Modellieren Sie die oben beschriebene Miniwelt mit einem UML Klassendiagramm. Das Diagramm
+soll alle notwendigen Klassen, Attribute, Assoziationen und Multiplizitäten beinhalten.
+Falls Sie beim Modellieren Annahmen getroffen haben, schreiben Sie diese bitte dazu.
+
+
+
+2. Relationenmodell (10 Punkte)
+Transformieren Sie das gegebene UML Klassendiagramm in ein Relationenmodell. Unterstreichen
+Sie die Primärschlüssel mit einer geraden Linie und Fremdschlüssel mit einer gewellten Linie.
+Bestimmen Sie selbst, welche Attribute jeweils Schlüsseleigenschaft haben.
+Achten Sie darauf, dass eine Lehrveranstaltung öfters angeboten werden kann (z.B. jedes Semester).
+Die Vererbung ist total. Wählen Sie bei der Transformation der Generalisierung die Strategie, die in
+diesem Fall die meisten Vorteile, und die wenigsten Nachteile aufweist. Begründen sie Ihre Wahl.
+
+Studentin("MatrikelNr", SVNr, Vorname, Nachname, 'Kennzahl')
+Studium("Kennzahl", Name)
+Benotung('"MatrikelNr, LVNr, Semester"', Punkte, Note)
+LV("LVNR", Name, "Semester", ECTS)
+ist_befreundet_mit('"MatrikelNr, MatrikelNrFreund"')
+
+Floor Methode:
+
+Da die Vererbung total/complete ist und wir keine fehlenden Abbildungen haben.
+
+
+4. Normalformen (15 Punkte)
+
+Gegeben sei folgende Relation:
+Kurs(MNR, Vorname, Nachname, LVNr, KursName, Semester)
+Ein Mitarbeiter hat einen Vornamen und einen Nachnamen. Eine LV hat einen Kursnamen und eine
+pro LV eindeutige LVNR. Eine LV kann je Semester von einem oder mehreren Mitarbeitern
+gehalten werden. Ein Mitarbeiter kann in einem Semester mehrere LVs anbieten.
+
+
+4.a)	Geben Sie die daraus resultierenden funktionalen Abhängigkeiten an [2 Punkte]:
+
+	Kurs(MNR, Vorname, Nachname, LVNr, KursName, Semester)
+
+	F = MNR -> Vorname, Nachname; 
+		LVNR -> KursName; 
+
+b)Geben Sie den oder die Schlüsselkandidaten an [3 Punkte]:
+
+	MNR, LVNR, Semester
+
+c)Bestimmen Sie die Normalform der gegebenen Relation. Begründen Sie Ihre Antwort[4 Punkte].
+
+	1NF Erfüllt
+	2NF Nicht Erfüllt
+	
+d)Zerlegen Sie das Schema, um die BCNF zu erreichen. [6 Punkte]
+	
+	Kurs("MNR", "LVNR", "Semester")
+	Mitarbeiter("MNR", Vorname, Nachname)
+	LV("LVNr", KursName)

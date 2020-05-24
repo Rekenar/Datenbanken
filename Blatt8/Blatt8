@@ -1,0 +1,139 @@
+Grundlegendes: Gegeben sei eine Tabelle Kunde mit den Attributen KundeID (14 Byte, Schlüssel),
+KundeName (25 Byte), Geburtsdatum (7 Byte), ProduktID (4 Byte) mit der Sie 100.000 Datensätze
+verwalten. Gehen Sie davon aus, dass 100 verschiedene Werte für Produkte (per ProduktID)
+gespeichert und diese gleichverteilt (jede ID kommt gleich oft vor) sind. Ein Block in Ihrem System hat
+4 KiB. Um einen Block zu referenzieren benötigen Sie 6 Bytes.
+
+
+
+Aufgabe 1 – Kennwerte und Faktoren der Tabelle Kunde
+
+a) Berechnen Sie die Satzgröße (RL).
+
+	14 Byte + 25 Byte + 7 Byte + 4 Byte = 50 Byte
+
+
+b) Berechnen Sie den Blockungsfaktor (BF) und die Anzahl der Blöcke (NB), wenn angenommen wird,
+dass Sätze nicht über Blöcke gespannt werden?
+
+	Blockungsfaktor (BF): Anzahl der Sätze pro Block
+	BF = BL / RL
+	BL: Blocklänge
+	RL: Recordlänge / Satzlänge
+	Abrunden: Es können nur ganze Sätze gespeichert werden.
+
+		BF = 4 KiB / 50 Byte
+		BF = 4096 Byte / 50 Byte
+		81 Sätze pro Block
+
+
+	Anzahl der Blöcke (NB):
+	NB = NR / BF
+	NR: Anzahl der Records / Sätze
+	Aufrunden: Alle Sätze müssen gespeichert werden. 
+
+		NB = 100000 Sätze / 81 Sätze pro Block
+		NB = 1235 Blöcke
+
+
+c) Angenommen, die Tabelle Kunde ist ungeordnet, wie viele Blöcke müssen Sie maximal /
+durchschnittlich lesen, um einen Kunde mit einer bestimmten KundeID in der Tabelle zu finden?
+
+	Suchen:
+	lineare Suche ab Beginn
+	Suche nach Key: im Mittel: 618
+	Suche Non-Key: immer: 1235
+
+
+d) Angenommen die Tabelle Kunde ist nach dem Attribut KundeID sortiert. Wie viele Blöcke müssen
+Sie maximal lesen, um einen Kunden mit einer bestimmten KundeID in der Tabelle zu finden?
+
+	Suchen
+	Binäre Suche
+	Zugriffe: 10 + 1 = 11
+
+
+e) Angenommen, die Tabelle Kunde ist nach dem Attribut KundeID sortiert. Wie viele Blöcke müssen
+Sie maximal / durchschnittlich lesen, um Kunden mit einem bestimmten Namen (KundeName) zu
+erhalten? KundeName ist nicht eindeutig (unique).
+
+	Suche Non-Key: immer: 1235
+
+
+Aufgabe 2 – Primärindex (dünn)
+
+Angenommen die Tabelle Kunde ist nach dem Attribut KundeID sortiert und Sie wollen einen dünnen
+Primärindex anlegen.
+Berechnen Sie für diesen Index:
+
+Berechnen Sie für diesen Index:
+
+a) die Indexsatzlänge (RLi) und den Indexblockungsfaktor (BFi),
+
+RLi = 14 Byte(KundeID) + 6 Byte(Referenzierung) = 20 Byte
+BFi = 4096(Blockgröße) / 20(Indexsatzlänge) = 204
+
+b) die Anzahl der Index-Einträge (NRi) und der Index-Blöcke (NBi),
+
+NRi = 1235, weil 1235 Blöcke und für jeden Block ein Index. 
+NBi = 1235(NR) / 204 (BF) = 7
+
+c) die Anzahl der Plattenzugriffe für die Suche nach einem Satz, wenn die KundeID das Suchattribut
+ist,
+
+Log2(Index-Blöcke) = 4
+
+
+d) die Anzahl der Plattenzugriffe für die Suche nach Sätzen, wenn eine ProduktID das Suchattribut ist.
+
+1235
+
+
+
+Aufgabe 3 – Sekundärindex (auf Schlüsselattribut)
+Angenommen die Tabelle Kunde ist nach dem Attribut ProduktID sortiert und Sie wollen einen dichten
+Sekundärindex auf das Attribut KundeID anlegen. Berechnen Sie für diese Indizierungsvariante:
+
+a) die Indexsatzlänge (RLi) und den Indexblockungsfaktor (BFi),
+
+	Indexattr.: 14 Byte
+	Adr.: 6 Byte
+	Indexsatz: 20
+	BF (Index): 4096 / 20 = 204
+
+b) die Anzahl der Index-Einträge (NRi) und der Index-Blöcke (NBi),
+
+	NRi = 100.000
+	NBi = 100.000 / 204 = 491
+
+c) die Anzahl der Plattenzugriffe für die Suche nach einem Satz, wenn die KundeID gegeben ist,
+
+	binary search = log2(491) = Zugriffe: 9 + 1 = 10
+
+
+d) die Anzahl der Plattenzugriffe für die Suche nach Sätzen, wenn eine ProduktID gegeben ist.
+
+	binary search = log2(1235) = Zugriffe: 10.27 = 11
+	1000/81 = 12.35 = 12         jedes Produkt wird 1000 mal verkauft dividiert durch die 81 Blöcke
+	11 + 12 = 23 Zugriffe
+
+
+Aufgabe 4 – Sekundärindex (auf Nicht-Schlüsselattribut)
+Angenommen die Tabelle Kunde aus Aufgabe 1 ist nach dem Attribut KundeID sortiert und Sie wollen
+einen Sekundärindex auf das Attribut ProduktID anlegen. Wie kann die Struktur der Hauptdatei und der
+Indexdatei ausschauen?
+
+Aufgabe 5 – Clustering-Index auf nicht Schlüsselattribut
+
+Angenommen die Tabelle Kunde ist nach dem Attribut ProduktID sortiert und Sie wollen einen
+Clustering-Index auf das Attribut ProduktID anlegen. Ein Block in der Hauptdatei enthält nur Datensätze
+mit dem gleichen Wert des Ordnungsattributs. Folgeblocks sind verkettet. Berechnen Sie also auch,
+wie viele Folgebocks durchschnittlich benötigt werden.
+Berechnen Sie für diese Indizierungsvariante:
+
+a) die Indexsatzlänge (RLi) und den Indexblockungsfaktor (BFi),
+b) die Anzahl der Index-Einträge (NRi) und Index-Blöcke (NBi),
+c) die Anzahl der Plattenzugriffe für die Suche nach einem Satz, wenn die KundeID gegeben ist,
+d) die Anzahl der Plattenzugriffe für die Suche nach Sätzen, wenn eine ProduktID gegeben ist.
+
+

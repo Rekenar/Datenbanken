@@ -1,0 +1,174 @@
+Aufgabe 1 – Mehrbenutzerbetrieb
+
+Gegeben seien die nebenläufigen Programme Prog1 und Prog2. Beide Programme starten und
+verwenden jeweils eine Datenbanktransaktion (Tra1 und Tra2), wobei die DB-Operationen read, write,
+commit und abort in der angegebenen Reihenfolge auf die Datenbank angewendet werden.
+
+
+a. 
+Was ist eine Transaktion?   
+
+	Transaktion:
+	➢ Folge von DB-Operationen(READ, INSERT, UPDATE, DELETE)
+	➢ führt DB von einem konsistenten DB-Zustand in einen (anderen) konsistenten Zustand
+	➢ es können inkonsistente Zwischenzustände auftreten
+	➢ wird ganz oder gar nicht ausgeführt
+
+
+Was bedeutet abort bzw. commit?
+
+	➢COMMIT Transaktion erfolgreich beenden
+	➢COMMITTED Transaktion wurde erfolgreich beendet(Signal durch das System)
+	➢ ABORT (ROLLBACK) Transaktion wird erfolglos beendet (vorheriger DB-Zustand muss wiederhergestellt werden)
+	
+Was ist ACID?
+
+	➢ ATOMICITY
+		Transaktion ist atomar, d.h. Transaktion wird ganz oder gar nicht ausgeführt
+	➢ CONSISTENCY PRESERVATION
+		Korrekte Ausführung einer Transaktion bewahrt Konsistenz
+	➢ ISOLATION
+		Teilergebnisse einer Transaktion bleiben bis zum erfolgreichen Ende für alle
+		anderen Transaktionen unsichtbar
+	➢ DURABILITY
+		Die Ergebnisse einer erfolgreich durchgeführten Transaktion bleiben dauerhaft
+		erhalten
+
+Warum müssen Transaktionen dem ACID-Prinzip genügen?
+
+	Damit die Daten als verlässlich und Konsistent gelten.
+
+b. 
+Was versteht man unter dem Begriff nebenläufig? 
+
+	Parallellaufende Transaktionen
+
+Was ist unkontrollierter Mehrbenutzerbetrieb?
+
+	Bei unkontrolliertem Mehrbenutzerbetrieb treten folgende Fehlerarten auf:
+		➢Verlorengegangene Änderung (Lost-Update)
+		➢Abhängigkeit von nicht bestätigten Daten (dirty read - temporary update)
+		➢Inkonsistente Analyse (Phantomproblem)
+
+c. Welche Probleme treten im unkontrollierten Mehrbenutzerbetrieb bei den nebenläufigen
+Transaktionen Tra1 und Tra2 auf?
+
+		Tra1 		Tra2
+1 		read (A)					/A wird gelesen
+2 		A:=A+5 		read (A)		/A = A + 5 				/A wird gelesen
+3 		write (A)					/A wird geschrieben
+4 					read (B)								/B wird gelesen
+5 					A:=A+10									*/A = A + 10
+6 					write (A)								/A wird geschrieben
+7 		read(C)						/C wird gelesen
+8 		read (A) 	B:=B+A 			/A wird gelesen			/B = B + A
+9 		A:=4*A						*/A = 4 * A
+10 		C:=C+6						/C = C + 6
+11 		write (C)					/C wird geschrieben
+12 		read(C)						/C wird gelesen
+13 					read (C)								/C wird gelesen
+14 		write (A) 	C:=3*B+C								/C = 3 * B + C
+15 					write (C)								/C wird geschrieben
+16 		read (C)					/C wird gelesen
+17 					Abort									/Abbruch
+18 		commit						/Erfolgreich
+
+	lost update bei Zeile 2 bis Zeile 6.
+	"dirty read" da der Wert bei A = A + 10 herauskommt somit ungültig ist und so auch der Wert bei A = 4 * A.
+
+
+d. Was ist ein Schedule (Ausführungsplan)? Schreiben Sie einen (beliebigen seriellen und einen
+beliebigen nicht seriellen) Schedule für die Transaktionen Tra1 und Tra2 der Programme Prog1
+und Prog2 an.
+
+	Er sorgt dafür, dass keine Konflikte bei nebenläufigen Transaktionen auftreten. 
+	Transaktionen werden nach Möglichkeit parallel ausgeführt, um die Systemressourcen optimal ausnutzen zu können 
+	bzw. sie in kürzerer Zeit abzuschließen als wenn man sie nacheinander (seriell) ausführt.
+	
+
+	seriell:
+	<(1,r,a), (1,w,a), (1,r,c), (1,r,a), (1,w,c), (1,r,c), (1,w,a), (1,r,c), (2,r,a), (2,r,b), (2,w,a), (2,r,c), (2,w,c)>
+	nicht seriell:
+	<(1,r,a), (1,w,a), (2,r,a), (2,r,b), (2,w,a), (1,r,c), (1,r,a), (1,w,c), (1,w,a), (2,r,c), (2,w,c), (1,r,c), (1,r,c)>
+
+Aufgabe 2 – Serialisierbarkeit
+
+Gegeben sei folgender Schedule S1, bestehend aus Operationen der Transaktionen T1, T2 und
+T3. Die Nummerierung entspricht der Reihenfolge der Operationen.
+
+	T1 			T2 			T3
+1 				read(y)
+2 							read(x)
+3 							write(y)
+4 	write(z)
+5 	read(y)
+6				write(y)
+7 							read(z)
+8 				commit
+9 							commit
+10 	write(x)
+11 	commit
+
+
+
+a. Geben Sie das Schedule entsprechend der Notation aus dem Skriptum als Sequenz von
+Ausführungsschritten an.
+
+
+
+b. Was versteht man prinzipiell unter Serialisierbarkeit? Erläutern Sie den Unterschied zwischen
+Konflikt-, Sichten-, und Zustandserialisierbarkeit.
+
+
+
+c. Geben Sie die Abhängigkeitsbeziehung D(S1) des angegeben Schedules S1 und eines beliebigen
+seriellen Schedules S2 von T1-T3 an. Sind die beiden äquivalent?
+
+
+
+d. Ist das Schedule S1 konfliktserialisierbar? Warum? Begründen Sie Ihre Antwort anhand eines
+Präzedenzgraphen. Ist das Schedule S2 konfliktserialisierbar?
+
+
+
+
+Aufgabe 3 – Synchronisation, Sperren, 2PL
+
+Gegeben sei folgender Schedule:
+
+<(1,r,a), (2,w,a), (2,r,b), (1,r,b), (2,r,c), (2,w,b), (1,w,b), (1,r,c), (2,w,c), (1,w,c)>
+
+a. Was versteht man unter wohlgeformten Transaktionen?
+
+	➢ Eine Transaktion greift auf ein Objekt nur zu, wenn sie dieses vorher gesperrt hat
+	➢ Eine Transaktion sperrt kein Objekt, das sie bereits gesperrt hat
+	➢ Transaktion gibt nur Objekte frei, die sie gesperrt hat
+	➢ Vor Beendigung gibt eine Transaktion alle von ihr gesperrten Objekte frei
+
+b. Welche weiteren Bedingungen müssen 2-Phasen Transaktion einhalten?
+
+	➢ nach dem ersten Freigeben einer Sperre wird keine weitere Sperre angefordert
+
+c. Wie werden die Operationen der Transaktionen T1 und T2 geordnet, wenn das System ein 2-
+Phasen-Sperrprotokoll (2PL) verwendet? Überführen Sie T1 und T2 in 2PL Transaktionen und
+geben Sie das daraus resultierende Schedule an.
+
+<(1,r,a), (2,w,a), (2,r,b), (1,r,b), (2,r,c), (2,w,b), (1,w,b), (1,r,c), (2,w,c), (1,w,c)>
+
+<(1,l,a), (1,l,b), (1,l,c), (1,r,a), (1,r,b), (1,r,c), (1,w,b), (1,w,c), (1,u,a), (1,u,b), (1,u,c), (2,l,a), (2,l,b), (2,l,c), (2,w,a), (2,r,b), (2,r,c), (2,w,b), (2,w,c), (2,u,a), (2,u,b), (2,u,c)>
+
+
+d. Überführen Sie den Schedule in einen strikten Schedule.
+
+<(1,l,a), (1,l,b), (1,l,c), (1,r,a), (1,r,b), (1,r,c), (1,w,b), (1,w,c), (1,u,a), (1,u,b), (1,u,c), (2,l,a), (2,l,b), (2,l,c), (2,w,a), (2,r,b), (2,r,c), (2,w,b), (2,w,c), (2,u,a), (2,u,b), (2,u,c)>
+
+Aufgabe 4 – Transaktionen (Deadlock)
+
+Gegeben sind zwei Transaktionen T1 und T2, welche parallel ausgeführt werden sollen:
+
+T1= < (lock,m), (read,m), (write,m), (lock,o), (unlock,m), (read,o), (write,o), (unlock,o)>
+T2= <(lock,o), (read,o), (lock,m), (read,m),( write,m),( write,o), (unlock,o), (unlock,m)>
+
+Kann bei den Transaktionen T1 und T2 ein Deadlock auftreten? Begründen Sie Ihre Antwort.
+
+Ja da T1 aufs unlocken von o wartet und T2 aufs unlocken von m.
