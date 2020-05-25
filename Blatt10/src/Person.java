@@ -20,6 +20,7 @@ public class Person {
         this.conn = conn;
     }
 
+
     /**
      *  GETTER Methoden
      */
@@ -110,8 +111,7 @@ public class Person {
             ResultSet rs = stmt.executeQuery(query);
             while(rs.next()){
                     if(rs.getString("email").equals(getEmail())){
-                        Person freundneu = new Person(rs.getString("emailfreund"), conn);
-                        this.freunde.add(freundneu);
+                        this.freunde.add( new Person(rs.getString("emailfreund"), conn));
                 }
             }
             rs.close();
@@ -128,9 +128,9 @@ public class Person {
 
     void setVorname(String vorname){
         try{
-            PreparedStatement ps = conn.prepareStatement("UPDATE person SET vorname = ? WHERE vorname = ?");
+            PreparedStatement ps = conn.prepareStatement("UPDATE person SET vorname = ? WHERE email = ?");
             ps.setString(1, vorname);
-            ps.setString(2,getVorname());
+            ps.setString(2,getEmail());
             ps.executeUpdate();
             ps.close();
         }catch(SQLException e){
@@ -182,18 +182,56 @@ public class Person {
         }
     }
     void addFriend(Person friend){
-
+        try{
+            PreparedStatement ps = conn.prepareStatement("INSERT INTO hatfreund(email, emailfreund, bisdatum) VALUES(?,?,?)");
+            ps.setString(1, getEmail());
+            ps.setString(2,friend.getEmail());
+            ps.setDate(3,getGeburtsdatum());
+            ps.executeUpdate();
+            ps.close();
+        }catch(SQLException e){
+            System.out.println("not Working addFriend");
+        }
     }
     void removeFriend(Person exfriend){
 
+        try{
+            PreparedStatement ps = conn.prepareStatement("DELETE FROM hatfreund WHERE email = ? AND emailfreund = ?");
+            ps.setString(1, getEmail());
+            ps.setString(2,exfriend.getEmail());
+            ps.executeUpdate();
+            ps.close();
+        }catch(SQLException e){
+            System.out.println("not Working RemoveFriend");
+        }
     }
     void delete(){
 
     }
     void persist(){
+        try{
+            PreparedStatement ps = conn.prepareStatement("UPDATE person SET email = ? AND vorname = ? AND nachname = ? AND geburtsdatum = ? AND geschlecht = ? " +
+                                                            "WHERE email = ? AND vorname = ? AND nachname = ? AND geburtsdatum = ? AND geschlecht = ?");
+            ps.setString(1,getEmail());
+            ps.setString(2,getVorname());
+            ps.setString(3,getNachname());
+            ps.setString(4,getVorname());
 
+
+
+
+
+            
+        }catch (SQLException e){
+
+        }
     }
     void unload(){
+        this.vorname = null;
+        this.nachname = null;
+        this.geburtsdatum = null;
+        this.geschlecht = null;
+        this.freunde.clear();
 
     }
 }
