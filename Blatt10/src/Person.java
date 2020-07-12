@@ -30,6 +30,9 @@ public class Person {
     }
     String getVorname(){
         try{
+            if(vorname != null){
+                return vorname;
+            }
             String query = "SELECT * FROM person";
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
@@ -49,6 +52,9 @@ public class Person {
     }
     String getNachname(){
         try{
+            if(nachname != null){
+                return nachname;
+            }
             String query = "SELECT * FROM person";
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
@@ -68,6 +74,9 @@ public class Person {
     }
     Date getGeburtsdatum(){
         try{
+            if(geburtsdatum != null){
+                return geburtsdatum;
+            }
             String query = "SELECT * FROM person";
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
@@ -87,6 +96,9 @@ public class Person {
     }
     String getGeschlecht(){
         try{
+            if(geschlecht != null){
+                return geschlecht;
+            }
             String query = "SELECT * FROM person";
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
@@ -206,25 +218,10 @@ public class Person {
         }
     }
     void delete(){
-
+        
     }
     void persist(){
-        try{
-            PreparedStatement ps = conn.prepareStatement("UPDATE person SET email = ? AND vorname = ? AND nachname = ? AND geburtsdatum = ? AND geschlecht = ? " +
-                                                            "WHERE email = ? AND vorname = ? AND nachname = ? AND geburtsdatum = ? AND geschlecht = ?");
-            ps.setString(1,getEmail());
-            ps.setString(2,getVorname());
-            ps.setString(3,getNachname());
-            ps.setString(4,getVorname());
 
-
-
-
-
-            
-        }catch (SQLException e){
-
-        }
     }
     void unload(){
         this.vorname = null;

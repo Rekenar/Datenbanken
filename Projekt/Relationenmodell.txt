@@ -1,0 +1,18 @@
+Relationenmodell Projekt Datenbanken (Fößl&Wetscher)
+
+
+Beherbergungsbetrieb(BeherbergungsbetriebsID, Name, Adresse, Tel, Email, Fax, Website, Anzahl Sterne, Typ)
+
+Kategorie(KategorieID, Bezeichnung, Beschreibungstext, AnzahlreguläreBetten, AnzahlGesamtbetten, BeherbergungsEmail, BeherbungsbetriebsID,)
+
+Einheit(EinheitsID, Bezeichnung, KategorieID)
+
+Buchung(BuchungsID, Anreise, Abreise, AnzahlErwachsene, AnzahlKinder, GastID, EinheitID)
+
+Gast(GastID, Vorname, Nachname, Titel, Geburtsdatum, Wohnadresse, Emailadresse, Telefonnummer, BeherbergungsID)
+
+Gültigkeitszeitraum(VonDatum, BisDatum, pensionsart, KategorieID)
+
+beziehung(GastID, GastBezID, Art)
+
+reistMit(GastID, BuchungsID)

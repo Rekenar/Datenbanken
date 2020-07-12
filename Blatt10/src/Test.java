@@ -12,15 +12,13 @@ public class Test {
             System.out.println(person.getGeschlecht());
             System.out.println(person.getFreunde().size());
             person.setVorname("Hannah");
-            person.persist();
             System.out.println(person.getVorname());
             person.addFriend(alias);
             person.removeFriend(alias);
-            person.persist();
             person.unload();
             con.close();
         }catch (SQLException ex){
-            System.out.println("Not Working");
+            System.out.println(ex);
         }
 
 

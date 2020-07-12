@@ -1,0 +1,93 @@
+Aufgabe 1
+Laden Sie sich das Dokument „social.xml“ aus dem Moodle Kurs herunter.
+a) Öffnen Sie das Dokument in einem Texteditor und beschreiben Sie, was das Dokument abbildet.
+
+Das Dokument bildet ein soziales Netzwerk ab.
+Personen in dem sozialen Netzwerk können fotos hochladen und andere personen abbilden.
+Personen können nachrichten an andere Personen senden.
+Personen können in gruppen sein und diese auch leiten
+Personen können freunde haben.
+
+b) Stellen Sie das XML Dokument in einer Baumstruktur graphisch dar. Es genügt dabei die Daten
+auszugsweise darzustellen.
+
+siehe Bild
+
+
+
+c) Erklären Sie die Begriffe Wurzel Element, Element, Wert und Attribut. 
+
+Das Wurzelelement ist die äußerste Schicht in der alle Informationen abgebildet sind.
+Elemente gliedern die Informationen im Wurzelelement.
+Werte sind die Informationen und Attribute die Platzhalter dafür.
+
+
+Aufgabe 2 (XPath)
+Erstellen Sie XPath Expressions für folgende Fragestellungen und testen Sie diese mit Ihrem XML
+Tool.
+a) Geben Sie alle Nachnamen der Personen aus.
+
+	/socialnetwork/personen/person/@nachname
+
+
+b) Geben Sie den Nachnamen des Besitzers der Gruppe „Klagenfurt“ aus.
+
+	/socialnetwork/personen/person[gruppen/besitzer[@name ='Klagenfurt']]/@nachname
+
+
+c) Geben Sie den 3. Nachrichtentext mit dem Betreff "Happy Birthday!“ aus.
+
+	/socialnetwork/nachrichten/nachricht[@betreff='Happy Birthday!'][3]/text()
+
+
+d) Geben Sie die Vornamen aller Personen, die bereits eine Nachricht an Personen, die am
+04.04.1989 geboren wurden gesendet haben aus.
+
+
+
+Aufgabe 3 (XPath)
+a) Geben Sie die URLs aller Photos, auf denen eine Person mit Geburtsdatum 02.06.1989 abgebildet
+ist aus.
+
+	/socialnetwork/personen/person/photos/photo/abgebildet
+	[@personemail = /socialnetwork/personen/person/@email 
+	and /socialnetwork/personen/person/@geburtsdatum="1989-06-02"]
+	/parent::photo/@url
+
+
+b) Geben Sie den Text aller Nachrichten, die von Amelie Meier am 20.12.2009 gesendet wurden
+aus.
+
+	/socialnetwork/nachrichten/nachricht[@vonemail = /socialnetwork/personen/person[@vorname = "Amelie"
+	and @nachname = "Meier"]/@email and nachricht/@datum = "2009-12-20"]/text()
+
+
+c) Geben Sie dem Vornamen und Nachnamen aller Personen, die bereits eine Nachricht gesendet
+haben aus.
+
+	/socialnetwork/personen/person[@email = /socialnetwork/nachrichten/nachricht/@vonemail]/@email
+
+
+d) Geben Sie die Photo Elemente aller Photos, die Sophia Krüger hochgeladen hat aus.
+
+	/socialnetwork/personen/person[@vorname="Sophia" and @nachname="Krüger"]/photos/photo
+
+Aufgabe 4 (XPath)
+a) Geben Sie die Geburtsdatum Elemente aller Personen, die mehr als 9 Fotos hochgeladen haben
+aus. Ergebnis: 2 Items.
+
+	/socialnetwork/personen/person/photos[count(photo)>9]/parent::person/@geburtsdatum
+
+b) Wer (alle Attribute der Person) hat bereits ein Foto hochgeladen, auf dem er selbst abgebildet
+ist? Ergebnis 25 Items
+
+	/socialnetwork/personen/person[@email = ./photos/photo/abgebildet/@personemail]
+
+c) Wer (Vorname und Nachname) hat die 35. Nachricht gesendet?
+
+	socialnetwork/personen/person[@email=/socialnetwork/nachrichten/nachricht[35]/@vonemail]/(@vorname|@nachname)
+
+
+d) Welche Person steht im Dokument nach der Person, die die 15. Nachricht gesendet hat? 
+
+

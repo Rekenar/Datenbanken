@@ -1,0 +1,104 @@
+Aufgabe 1 (XQuery)
+Erstellen Sie für folgende Abfragen XQuery Ausdrücke:
+a) Geben Sie eine Liste alle Vornamen und Nachnamen der Personen im folgenden Format aus:
+							
+							<personen>
+							<person vorname=“Hannah“ nachname=“Franke“></person>
+							< person vorname=“Leoni“ nachname=“Schneider“></person>
+							…
+							</personen>
+
+	<personen>
+	{
+	for $person in doc("D:\Daten\Downloads\social.xml")/socialnetwork/personen/person
+		return<person Vorname="{$person/@vorname}" Nachname = "{$person/@nachname}"/>
+	}	
+	</personen> 
+
+
+b) Gleich wie a), aber die Ausgabe soll alphabetisch aufsteigend nach dem Nachnamen
+sortiert erfolgen.
+
+	<personen>
+	{
+	for $person in doc("D:\Daten\Downloads\social.xml")/socialnetwork/personen/person
+		order by $person/@nachname ascending
+		return<person Vorname="{$person/@vorname}" Nachname = "{$person/@nachname}"/>
+	}	
+	</personen>
+	
+Aufgabe 2 (XQuery)
+Erstellen Sie für folgende Abfragen XQuery Ausdrücke:
+a) 	Erzeugen Sie eine Liste der Personen mitsamt der Anzahl der von jeder Person hochgeladenen Photos. Das Ergebnis soll folgendes Format haben:
+	<personenDetails>
+	<person geburtsdatum=“ 1983-04-16“ vorname=“Max“ nachname=“Mustermann“ anzahlPhotos=“10“/>
+	<person geburtsdatum=“ 1983-04-18“ vorname=“John“ nachname=“Doe“ anzahlPhotos=“15“/>
+	…
+	</personenDetails>
+
+<personen>
+{
+for $person in doc("D:\Daten\Downloads\social.xml")/socialnetwork/personen/person
+	let $phot := $person//photo
+	return<person Geburtsdatum = "{$person/@geburtsdatum}" Vorname="{$person/@vorname}" Nachname ="{$person/@nachname}" anzahlPhotos = "{count($phot)}"/>
+}	
+</personen> 
+
+
+
+
+b) Geben Sie den Nachnamen, Vornamen und die Emailadresse aller Personen aus. Eine
+Person soll in einem „person“ Element dargestellt werden, wenn sie 1989 oder früher geboren
+wurde. Andernfalls in einem „jungperson“ Element.
+Die Ausgabe soll folgendes Format haben: <personen>
+<person>
+<vorname>Max</vorname>
+<nachname>Mustermann</nachname>
+< email> H.Mueller@yahoo.com</ email>
+</person>
+<jungperson> 
+1 <vorname>Leonie</vorname>
+<nachname>Fischer</nachname>
+< email>Leonie.Fischer@sms.at</ email>
+</jungperson>
+…
+
+<personen>
+{
+for $person in doc("D:\Daten\Downloads\social.xml")/socialnetwork/personen/person
+	let $gb := year-from-date($person/@geburtsdatum)
+	return
+	if($gb <= 1989) then
+		<person>
+		{$person/@vorname}
+		{$person/@nachname}
+		{$person/@geburtsdatum}
+		{$person/@email}
+		</person>
+	else
+		<jungperson>
+		{$person/@vorname}
+		{$person/@nachname}
+		{$person/@geburtsdatum}
+		{$person/@email}
+		</jungperson>
+}
+</personen>
+Hinweis: Das Geburtsdatum muss in den Typ Date umgewandelt werden, um sinnvolle
+Vergleichsoperationen ausführen zu können. Dies kann mit der Funktion xs:date(string)
+erfolgen. Um, statt eines Attribut Wert Paares, nur den Wert eines Attributs zu erhalten, kann
+die Funktion string(@someAttrbute) verwenden werden. 
+
+Aufgabe 3 (XQuery)
+Erstellen Sie für folgende Abfragen XQuery Ausdrücke:
+a) Gesucht sind alle Personen, die mehr Freunde, als Lena Weber haben. Geben Sie eine
+Liste im folgenden Format aus:
+<personen>
+<person email=“ L.Weber@gmail.com“>Lena Weber</person …
+</personen>
+
+
+
+
+b) Geben Sie die Emailadressen aller Personen aus, die ausschließlich in der Gruppe
+„Villach“ sind. Verwenden Sie dazu XQuery Quantoren. 
