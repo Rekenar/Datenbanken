@@ -3,7 +3,7 @@ import java.sql.*;
 public class Main {
     public static void main(String[] args) {
         try{
-            Connection con = DriverManager.getConnection("jdbc:postgresql://localhost/ProjectDatabase","postgres","15935724862684pH");
+            Connection con = DriverManager.getConnection("jdbc:postgresql://localhost/ProjectDatabase","postgres","Admin");
             Kategorie k = new Kategorie(1,con);
             Gast g = new Gast(1,con);
             Beherbergungsbetrieb b = new Beherbergungsbetrieb(1,con);
